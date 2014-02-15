@@ -4,4 +4,4 @@ please replace this stupid line
 
 don't touch this line what so ever!
 
-replace this to create conflict
+This is conflicting!
