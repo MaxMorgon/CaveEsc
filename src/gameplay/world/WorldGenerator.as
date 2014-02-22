@@ -22,7 +22,7 @@ package gameplay.world
 			//create all units
 			var result:Vector.<Shape> = new Vector.<Shape>();
 			
-			var curX:Number = 0
+			var curX:Number = 0;
 			for (var i:int = 0; i < length; i++) 
 			{
 				

@@ -1,9 +1,8 @@
 package gameplay 
 {
 	import flash.display.DisplayObject;
-	import flash.display.Shape;
-	import flash.display.SpreadMethod;
 	import flash.display.Sprite;
+	import flash.display.Stage;
 	import flash.events.Event;
 	import gameplay.world.World;
 	import gameplay.world.WorldGenerator;
@@ -27,6 +26,9 @@ package gameplay
 		
 		//the world object, used to manage the world bodies(dynamic and static)
 		public var mWorld:World;
+		
+		//a reference to the stage
+		public var mStage:Stage;
 		
 		public function Game() 
 		{

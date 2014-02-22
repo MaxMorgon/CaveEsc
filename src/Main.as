@@ -4,6 +4,7 @@ package
 	import flash.display.Stage;
 	import flash.events.Event;
 	import gameplay.Game;
+	import utils.AdvInput;
 
 	/**
 	 * ...
@@ -25,7 +26,11 @@ package
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
+			//make a static reference to the stage, easily accessible from anywhere
 			stageRef = stage;
+			
+			//initialize the advance input class
+			AdvInput.init(stage);
 			
 			game = new Game();
 			
