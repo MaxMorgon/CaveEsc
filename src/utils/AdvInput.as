@@ -1,8 +1,11 @@
 package utils 
 {
 	import flash.display.Stage;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	
 	/**
 	 * ...
 	 * @author Ido Adar
@@ -10,20 +13,42 @@ package utils
 	public class AdvInput
 	{
 		
+		//EVENTS
+		public static const eKeyPress	:String = 'keyPress';
+		public static const eKeyDown	:String = 'KeyDown';
+		public static const eKeyUp		:String = 'KeyUp';
+		public static const eMouseDown	:String = 'mouseDown';
+		public static const eMouseUp	:String = 'mouseUp';
+		
+		
+		//OTHER VARS
 		public static var sMouseDown:Boolean = false;
 		
 		private static var psKeyMap:Object;
 		
 		private static var psStage:Stage;
 		
+		private static var psEvtDispatcher:EventDispatcher;
+		
 		/**
 		 * Initializes this class and adds it's events.
 		 * @param	stage	A reference to the main stage object.
 		 */
+		private static var psIsInitialized:Boolean = false;
 		public static function init(stage:Stage):void {
+			//verify that this class is only initialized once!
+			if (psIsInitialized) return; psIsInitialized = true;
+			
+			//init key map
 			psKeyMap = new Object();
 			
+			//init stage
 			psStage = stage;
+			
+			//init event dispatcher
+			psEvtDispatcher = new EventDispatcher();
+			
+			//init events
 			psStage.addEventListener(KeyboardEvent.KEY_DOWN	, onKey);
 			psStage.addEventListener(KeyboardEvent.KEY_UP		, onKey);
 			psStage.addEventListener(MouseEvent.MOUSE_DOWN	, onMouse);
@@ -41,7 +66,7 @@ package utils
 		}
 		
 		/**
-		 * This function check whether a key is down or not. Amazing.
+		 * This function checks whether a key is down or not. Amazing.
 		 * @param	keyCode		The key code to check for
 		 * @return True if the key is down, false if not. Complicated.
 		 */
@@ -73,10 +98,42 @@ package utils
 			if (psKeyMap[curKey] == undefined) psKeyMap[curKey] = 0;
 			//handle events
 			if (e.type == KeyboardEvent.KEY_DOWN) {
-				if (psKeyMap[curKey] == 0) psKeyMap[curKey] = 1;
+				if (psKeyMap[curKey] == 0) {
+					psKeyMap[curKey] = 1;
+					//dispatch event from internal static event system
+					dispatchAdvKeyEvent(eKeyPress, e);
+				}
+				//dispatch event from internal static event system
+				dispatchAdvKeyEvent(eKeyDown, e);
 			}else if(e.type == KeyboardEvent.KEY_UP){
 				psKeyMap[curKey] = 0;
+				//dispatch event from internal static event system
+				dispatchAdvKeyEvent(eKeyUp, e);
 			}
+		}
+		
+		/**
+		 * This motherfucker is just like any other event adder!
+		 * Remove your events when you're not using them or learn to useWeakReference!
+		 */
+		static public function addAdvEvent(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
+			psEvtDispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
+		}
+		
+		/**
+		 * This motherfucker is just like any other event remover!
+		 * If you're using this function to clean up after yourself, you're awesome!
+		 */
+		static public function removeAdvEvent(type:String, listener:Function, useCapture:Boolean = false):void {
+			psEvtDispatcher.removeEventListener(type, listener, useCapture);
+		}
+		
+		static private function dispatchAdvKeyEvent(type:String, sourceEvent:KeyboardEvent):void 
+		{
+			var newEvt:KeyboardEvent = new KeyboardEvent(type, sourceEvent.bubbles, sourceEvent.cancelable,
+														 sourceEvent.charCode, sourceEvent.keyCode, sourceEvent.keyLocation,
+														 sourceEvent.ctrlKey, sourceEvent.altKey, sourceEvent.shiftKey);
+			psEvtDispatcher.dispatchEvent(newEvt);
 		}
 		
 		private static function onMouse(e:MouseEvent):void 
@@ -87,6 +144,8 @@ package utils
 				//todo: mousewheel code
 			}
 			
+			//dispatch event from internal static event system
+			psEvtDispatcher.dispatchEvent(e);
 		}
 		
 		public function AdvInput(forceNoInstance:NO_INSTANCE_CLASS):void {

@@ -4,12 +4,14 @@ package gameplay
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import gameplay.world.World;
 	import gameplay.world.WorldGenerator;
 	import nape.geom.Vec2;
 	import nape.space.Space;
 	import nape.util.BitmapDebug;
 	import nape.util.Debug;
+	import utils.AdvInput;
 	/**
 	 * ...
 	 * @author Ido Adar
@@ -47,6 +49,7 @@ package gameplay
 			
 			//initializes the enterFrame and other events. this should probably be moved or changed to some sort of init function
 			registerEvents();
+			
 		}
 		
 		private function onEnterFrame(e:Event):void 
